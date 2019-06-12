@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">BizCard Android</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_profile">Profile</string>
+    <string name="title_contacts">Contacts</string>
+    <string name="title_add">Add</string>
+    <string name="field_name">Name:</string>
+    <string name="hint_name">Enter a name</string>
+    <string name="field_position">Position:</string>
+    <string name="content_description_profile">Upload a profile picture</string>
+    <string name="button_upload_photo">Upload New Photo</string>
+    <string name="hint_position">What\'s your position?</string>
+    <string name="field_Company">Company:</string>
+    <string name="hint_Company">What company do you work for?</string>
+    <string name="hint_phone">What is your phone number?</string>
+    <string name="field_phone">Phone:</string>
+    <string name="field_email">Email:</string>
+    <string name="hint_email">What is your email?</string>
+    <string name="hint_website">Put the link of your website here</string>
+    <string name="field_website">Website:</string>
+    <string name="field_Code">Code:</string>
+    <string name="example_Code">R8Z3ST</string>
+    <string name="button_updateValues">Update Values</string>
+    <string name="hint_inputCode">Enter the code of the person you want to add</string>
+    <string name="button_add">Add</string>
+    <string name="textView_enterCode">Enter Code:</string>
+</resources>
