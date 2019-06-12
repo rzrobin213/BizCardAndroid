@@ -9,8 +9,7 @@ import android.view.MenuItem;
 
 public class AddUserActivity extends AppCompatActivity {
 
-    Intent passedIntent = getIntent();
-    String code = passedIntent.getStringExtra("code");
+    private String code;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -26,7 +25,6 @@ public class AddUserActivity extends AppCompatActivity {
                 case R.id.navigation_contacts:
                     Intent intent =
                             new Intent(AddUserActivity.this, ContactView.class);
-                    intent.putExtra("code",code);
                     startActivity(intent);
                     finish();
                     return true;
@@ -42,5 +40,7 @@ public class AddUserActivity extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setSelectedItemId(R.id.navigation_add);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        Intent passedIntent = getIntent();
+        code = passedIntent.getStringExtra("code");
     }
 }

@@ -111,6 +111,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        BottomNavigationView navView = findViewById(R.id.nav_view);
+        navView.setSelectedItemId(R.id.navigation_profile);
+
+    }
+
     private void UpdateValues (String data, String ext)
     {
         final String saveData= data;

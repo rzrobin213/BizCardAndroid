@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 public class ContactView extends AppCompatActivity {
 
+    private String code;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -39,6 +40,10 @@ public class ContactView extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setSelectedItemId(R.id.navigation_contacts);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        Intent passedIntent = getIntent();
+        code = passedIntent.getStringExtra("code");
 
     }
+
+
 }
