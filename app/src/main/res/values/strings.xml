@@ -26,4 +26,7 @@
     <string name="hint_inputCode">Enter the code of the person you want to add</string>
     <string name="button_add">Add</string>
     <string name="textView_enterCode">Enter Code:</string>
+    <string name="saved_code_default_value">default</string>
+    <string name="saved_code_value">default</string>
+
 </resources>

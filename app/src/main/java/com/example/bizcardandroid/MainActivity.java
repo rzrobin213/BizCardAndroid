@@ -1,6 +1,8 @@
 package com.example.bizcardandroid;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AlertDialog;
@@ -25,9 +27,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Text;
+
 
 import java.io.UnsupportedEncodingException;
 
@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
         editTextWebsite = findViewById(R.id.editText_website);
         textViewCodeVal = findViewById(R.id.textView_codeVals);
         buttonUpdate = findViewById(R.id.buttonUpdateVal);
-        createNewPerson();
         buttonUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,7 +104,19 @@ public class MainActivity extends AppCompatActivity {
                 UpdateValues(data, ext);
             }
         });
-
+        SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        String defaultValue = getResources().getString(R.string.saved_code_default_value);
+        String savedCode = sharedPref.getString(getString(R.string.saved_code_value),defaultValue);
+        if(savedCode.equals(defaultValue)) {
+            createNewPerson();
+            String codeValue = textViewCodeVal.getText().toString();
+            editor.putString(getString(R.string.saved_code_value), codeValue);
+            editor.apply();
+        }
+        else {
+            getPerson(savedCode);
+        }
         navView.setSelectedItemId(R.id.navigation_profile);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -116,6 +127,36 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setSelectedItemId(R.id.navigation_profile);
+    }
+
+    private void getPerson(String code) {
+        String getURL = url + "/api/user/" + code + "/";
+        requestQueue = Volley.newRequestQueue(getApplicationContext());
+        StringRequest getRequest = new StringRequest(Request.Method.GET, getURL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        JsonObject jsonObject =
+                                new JsonParser().parse(response).getAsJsonObject();
+                        JsonObject jsonData = jsonObject.getAsJsonObject("data");
+                        editTextName.setText(jsonData.get("name").getAsString());
+                        editTextCompany.setText(jsonData.get("company").getAsString());
+                        editTextPosition.setText(jsonData.get("position").getAsString());
+                        editTextEmail.setText(jsonData.get("email").getAsString());
+                        editTextPhone.setText(jsonData.get("phone").getAsString());
+                        editTextWebsite.setText(jsonData.get("website").getAsString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(),
+                                error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        requestQueue.add(getRequest);
+
 
     }
 
