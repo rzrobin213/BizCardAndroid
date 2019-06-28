@@ -1,6 +1,5 @@
 package com.example.bizcardandroid;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -41,8 +40,10 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextEmail;
     private EditText editTextWebsite;
     private TextView textViewCodeVal;
-    private Button buttonUpdate;
     private RequestQueue requestQueue;
+    private int savedUserNumber;
+    public static String dataKey = "com.example.bizcardandroid.data_key";
+    public static String firstTimeKey = "com.example.bizcardandroid.first_time_key";
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         editTextPhone = findViewById(R.id.editText_phone);
         editTextWebsite = findViewById(R.id.editText_website);
         textViewCodeVal = findViewById(R.id.textView_codeVals);
-        buttonUpdate = findViewById(R.id.buttonUpdateVal);
+        Button buttonUpdate = findViewById(R.id.buttonUpdateVal);
         buttonUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,25 +101,47 @@ public class MainActivity extends AppCompatActivity {
 
                 String data = jsonData.toString();
 
-                String ext = "api/user/" + textViewCodeVal.getText().toString() + "/";
+                String ext = "api/user/" + savedUserNumber + "/";
                 UpdateValues(data, ext);
             }
         });
-        SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
+
+        SharedPreferences sharedPref = getSharedPreferences("shared_pref",MODE_PRIVATE);
+        boolean firstTime = sharedPref.getBoolean(firstTimeKey,true);
         SharedPreferences.Editor editor = sharedPref.edit();
-        String defaultValue = getResources().getString(R.string.saved_code_default_value);
-        String savedCode = sharedPref.getString(getString(R.string.saved_code_value),defaultValue);
-        if(savedCode.equals(defaultValue)) {
+
+        if (firstTime) {
             createNewPerson();
-            String codeValue = textViewCodeVal.getText().toString();
-            editor.putString(getString(R.string.saved_code_value), codeValue);
+            editor.putBoolean(firstTimeKey,false);
             editor.apply();
         }
         else {
-            getPerson(savedCode);
+            String savedID = sharedPref.getString(dataKey,"-1");
+            if(strToInt(savedID) <= 0){
+                AlertDialog.Builder builder =
+                        new AlertDialog.Builder(MainActivity.this);
+                builder.setCancelable(true);
+                builder.setTitle("Save Error");
+                builder.setMessage("Please reenter data. Sorry");
+                createNewPerson();
+            }
+            else {
+                getPerson(savedID);
+            }
         }
+
         navView.setSelectedItemId(R.id.navigation_profile);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SharedPreferences sharedPref = getSharedPreferences("shared_pref",MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(dataKey, String.valueOf(savedUserNumber));
+        editor.apply();
 
     }
 
@@ -130,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getPerson(String code) {
-        String getURL = url + "/api/user/" + code + "/";
+        String getURL = url + "api/user/" + code + "/";
         requestQueue = Volley.newRequestQueue(getApplicationContext());
         StringRequest getRequest = new StringRequest(Request.Method.GET, getURL,
                 new Response.Listener<String>() {
@@ -145,6 +168,8 @@ public class MainActivity extends AppCompatActivity {
                         editTextEmail.setText(jsonData.get("email").getAsString());
                         editTextPhone.setText(jsonData.get("phone").getAsString());
                         editTextWebsite.setText(jsonData.get("website").getAsString());
+                        textViewCodeVal.setText(jsonData.get("code").getAsString());
+                        savedUserNumber = jsonData.get("id").getAsInt();
                     }
                 },
                 new Response.ErrorListener() {
@@ -181,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
                             editTextEmail.setText(jsonData.get("email").getAsString());
                             editTextPhone.setText(jsonData.get("phone").getAsString());
                             editTextWebsite.setText(jsonData.get("website").getAsString());
+                            savedUserNumber = jsonData.get("id").getAsInt();
                         } catch (JsonParseException e) {
                             Toast.makeText(getApplicationContext(),
                                     "Server Error",Toast.LENGTH_LONG).show();
@@ -195,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),
                                 error.getMessage(), Toast.LENGTH_SHORT).show();
 
-                        //Log.v("VOLLEY", error.toString());
+                        Log.v("VOLLEY", error.toString());
                     }
                 }
         )
@@ -234,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
                                     new JsonParser().parse(response).getAsJsonObject();
                             JsonObject jsonData = jsonObject.getAsJsonObject("data");
                             textViewCodeVal.setText(jsonData.get("code").getAsString());
+                            savedUserNumber = jsonData.get("id").getAsInt();
                         }
                         catch (JsonParseException e) {
                             AlertDialog.Builder builder =
@@ -273,5 +300,32 @@ public class MainActivity extends AppCompatActivity {
 
         };
         requestQueue.add(postRequest);
+    }
+
+    /**
+     * This method converts a string containing positive (not including zero) numeric values to an
+     * int value. It returns the numeric value for strings containing positive numbers and -1 for
+     * every other string.
+     * @param numStr the string to be converted.
+     * @return an int containing the numeric representation of the string or -1 for other cases.
+     */
+    public static int strToInt (String numStr) {
+        if(numStr != null)
+        {
+            try {
+                int result = Integer.parseInt(numStr);
+                if (result > 0)
+                    return result;
+                else
+                    return -1;
+
+            }
+            catch (NumberFormatException e) {
+                return -1;
+            }
+
+        }
+        return -1;
+
     }
 }
