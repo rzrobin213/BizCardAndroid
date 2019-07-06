@@ -1,5 +1,6 @@
 package com.example.bizcardandroid;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,7 +14,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewCodeVal;
     private RequestQueue requestQueue;
     private int savedUserNumber;
+
     public static String dataKey = "com.example.bizcardandroid.data_key";
     public static String firstTimeKey = "com.example.bizcardandroid.first_time_key";
 
@@ -50,13 +51,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            TextView codeVal = findViewById(R.id.textView_codeVals);
-            String personCode = codeVal.getText().toString();
+            String personID = Integer.toString(savedUserNumber);
             switch (item.getItemId()) {
                 case R.id.navigation_add:
                     Intent intent1 =
                             new Intent(MainActivity.this, AddUserActivity.class);
-                    intent1.putExtra("code",personCode);
+                    intent1.putExtra("id",personID);
                     startActivity(intent1);
                     return true;
                 case R.id.navigation_profile:
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_contacts:
                     Intent intent2 =
                             new Intent(MainActivity.this, ContactView.class);
-                    intent2.putExtra("code",personCode);
+                    intent2.putExtra("id",personID);
                     startActivity(intent2);
                     return true;
             }
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 String data = jsonData.toString();
 
                 String ext = "api/user/" + savedUserNumber + "/";
-                UpdateValues(data, ext);
+                updateValues(data, ext);
             }
         });
 
@@ -123,7 +123,15 @@ public class MainActivity extends AppCompatActivity {
                 builder.setCancelable(true);
                 builder.setTitle("Save Error");
                 builder.setMessage("Please reenter data. Sorry");
-                createNewPerson();
+                builder.setNegativeButton("close",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
             else {
                 getPerson(savedID);
@@ -175,8 +183,13 @@ public class MainActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(),
-                                error.getMessage(), Toast.LENGTH_SHORT).show();
+                        displayErrorMsg("Server Error", "Post request failed please try" +
+                                "again");
+                        SharedPreferences sharedPref =
+                                getSharedPreferences("shared_pref", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.clear();
+                        editor.apply();
                     }
                 });
 
@@ -185,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void UpdateValues (String data, String ext)
+    private void updateValues (String data, String ext)
     {
         final String saveData= data;
         String postURL = url + ext;
@@ -208,8 +221,13 @@ public class MainActivity extends AppCompatActivity {
                             editTextWebsite.setText(jsonData.get("website").getAsString());
                             savedUserNumber = jsonData.get("id").getAsInt();
                         } catch (JsonParseException e) {
-                            Toast.makeText(getApplicationContext(),
-                                    "Server Error",Toast.LENGTH_LONG).show();
+                            displayErrorMsg("Server Error","JSON parse error please try" +
+                                    "again");
+                            SharedPreferences sharedPref =
+                                    getSharedPreferences("shared_pref", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.clear();
+                            editor.apply();
                         }
                     }
                 },
@@ -218,9 +236,13 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
 
-                        Toast.makeText(getApplicationContext(),
-                                error.getMessage(), Toast.LENGTH_SHORT).show();
-
+                        displayErrorMsg("Server Error", "Post request failed please try" +
+                                "again");
+                        SharedPreferences sharedPref =
+                                getSharedPreferences("shared_pref", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.clear();
+                        editor.apply();
                         Log.v("VOLLEY", error.toString());
                     }
                 }
@@ -263,11 +285,13 @@ public class MainActivity extends AppCompatActivity {
                             savedUserNumber = jsonData.get("id").getAsInt();
                         }
                         catch (JsonParseException e) {
-                            AlertDialog.Builder builder =
-                                    new AlertDialog.Builder(MainActivity.this);
-                            builder.setCancelable(true);
-                            builder.setTitle("Server Error");
-                            builder.setMessage("JSON failure");
+                            displayErrorMsg("Server Error", "JSON parse failure. Please" +
+                                    "try again");
+                            SharedPreferences sharedPref =
+                                    getSharedPreferences("shared_pref", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.clear();
+                            editor.apply();
                         }
                     }
                 },
@@ -275,11 +299,14 @@ public class MainActivity extends AppCompatActivity {
                 {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        AlertDialog.Builder builder =
-                                new AlertDialog.Builder(MainActivity.this);
-                        builder.setCancelable(true);
-                        builder.setTitle("Server Error");
-                        builder.setMessage("Post Request Failed");
+                        displayErrorMsg("Server Error", "Post request failed please try" +
+                                "again");
+                        SharedPreferences sharedPref =
+                                getSharedPreferences("shared_pref", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.clear();
+                        editor.apply();
+
                     }
                 }
         )
@@ -309,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
      * @param numStr the string to be converted.
      * @return an int containing the numeric representation of the string or -1 for other cases.
      */
-    public static int strToInt (String numStr) {
+    public int strToInt (String numStr) {
         if(numStr != null)
         {
             try {
@@ -328,4 +355,22 @@ public class MainActivity extends AppCompatActivity {
         return -1;
 
     }
+
+    private void displayErrorMsg(String title, String msg) {
+        AlertDialog.Builder builder =
+                new AlertDialog.Builder(MainActivity.this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setNegativeButton("close",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 }

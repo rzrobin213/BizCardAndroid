@@ -25,6 +25,7 @@
     </android.support.design.widget.BottomNavigationView>
 
     <ListView
+        android:id="@+id/contactsListView"
         android:layout_width="370dp"
         android:layout_height="569dp"
         android:layout_marginStart="24dp"
