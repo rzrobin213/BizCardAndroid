@@ -12,28 +12,32 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#D3D3D3"
+        app:itemIconTint="@color/bottom_nav_color"
+        app:itemTextColor="@color/bottom_nav_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav_menu"
-        app:itemTextColor="@color/bottom_nav_color"
-        app:itemIconTint="@color/bottom_nav_color" >
+        app:menu="@menu/bottom_nav_menu">
 
     </android.support.design.widget.BottomNavigationView>
 
-    <ImageView
+    <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/imageview_profile"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
+        android:adjustViewBounds="true"
         android:contentDescription="@string/content_description_profile"
+        android:maxWidth="300dp"
+        android:maxHeight="150dp"
+        android:scaleType="centerInside"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +48,11 @@
         android:id="@+id/button_new_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:height="10dp"
+        android:ellipsize="none"
+        android:minHeight="40dp"
         android:text="@string/button_upload_photo"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -74,11 +82,13 @@
         android:layout_marginRight="24dp"
         android:ems="10"
         android:hint="@string/hint_name"
-        android:inputType="textPersonName"
+        android:inputType="text"
         app:layout_constraintBaseline_toBaselineOf="@+id/textView_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textView_name" />
+        app:layout_constraintStart_toEndOf="@+id/textView_name"
+        android:autofillHints="name"
+        tools:targetApi="o" />
 
     <TextView
         android:id="@+id/textView_Position"
@@ -104,11 +114,13 @@
         android:layout_marginRight="24dp"
         android:ems="10"
         android:hint="@string/hint_position"
-        android:inputType="textPersonName"
+        android:inputType="text"
         app:layout_constraintBaseline_toBaselineOf="@+id/textView_Position"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textView_Position" />
+        app:layout_constraintStart_toEndOf="@+id/textView_Position"
+        android:autofillHints="Your position"
+        tools:targetApi="o" />
 
     <TextView
         android:id="@+id/TextView_Company"
@@ -134,11 +146,13 @@
         android:layout_marginRight="24dp"
         android:ems="10"
         android:hint="@string/hint_Company"
-        android:inputType="textPersonName"
+        android:inputType="text"
         app:layout_constraintBaseline_toBaselineOf="@+id/TextView_Company"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/TextView_Company" />
+        app:layout_constraintStart_toEndOf="@+id/TextView_Company"
+        android:autofillHints="company name"
+        tools:targetApi="o" />
 
     <TextView
         android:id="@+id/textView_phone"
@@ -164,14 +178,16 @@
         android:layout_marginRight="24dp"
         android:ems="10"
         android:hint="@string/hint_phone"
-        android:inputType="textPersonName"
+        android:inputType="phone"
         app:layout_constraintBaseline_toBaselineOf="@+id/textView_phone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textView_phone" />
+        app:layout_constraintStart_toEndOf="@+id/textView_phone"
+        android:autofillHints="Phone"
+        tools:targetApi="o" />
 
     <TextView
-        android:id="@+id/textView8"
+        android:id="@+id/textView_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -194,11 +210,13 @@
         android:layout_marginRight="24dp"
         android:ems="10"
         android:hint="@string/hint_email"
-        android:inputType="textPersonName"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView8"
+        android:inputType="textEmailAddress"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textView_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textView8" />
+        app:layout_constraintStart_toEndOf="@+id/textView_email"
+        android:autofillHints="email"
+        tools:targetApi="o" />
 
     <TextView
         android:id="@+id/textView_Website"
@@ -212,7 +230,7 @@
         app:layout_constraintEnd_toStartOf="@+id/editText_website"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        app:layout_constraintTop_toBottomOf="@+id/textView_email" />
 
     <EditText
         android:id="@+id/editText_website"
@@ -224,11 +242,13 @@
         android:layout_marginRight="24dp"
         android:ems="10"
         android:hint="@string/hint_website"
-        android:inputType="textPersonName"
+        android:inputType="text"
         app:layout_constraintBaseline_toBaselineOf="@+id/textView_Website"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textView_Website" />
+        app:layout_constraintStart_toEndOf="@+id/textView_Website"
+        android:autofillHints="website"
+        tools:targetApi="o" />
 
     <TextView
         android:id="@+id/textView_Code"
@@ -267,7 +287,7 @@
         android:layout_marginLeft="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="12dp"
         android:text="@string/button_updateValues"
         app:layout_constraintBottom_toTopOf="@+id/nav_view"
         app:layout_constraintEnd_toEndOf="parent"

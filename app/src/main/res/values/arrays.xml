@@ -17,7 +17,13 @@
         <item>Reeeeeeeeeeeeeeee</item>
         <item>Zero</item>
         <item>Bored</item>
-
-
     </array>
+    <string-array name="filter_array">
+        <item>Name (a-z)</item>
+        <item>Name (z-a)</item>
+        <item>Company (a-z)</item>
+        <item>Company (z-a)</item>
+        <item>Recent</item>
+        <item>First</item>
+    </string-array>
 </resources>

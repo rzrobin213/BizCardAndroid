@@ -28,5 +28,8 @@
     <string name="textView_enterCode">Enter Code:</string>
     <string name="saved_code_default_value_key">com.example.bizcardandroid.saved_default_key</string>
     <string name="saved_code_value_key">com.example.bizcardandroid.saved_code_value_key</string>
+    <string name="contact_title">Your Contacts</string>
+    <string name="dummy">QWERTY</string>
+    <string name="sortBy">Sort By</string>
 
 </resources>
