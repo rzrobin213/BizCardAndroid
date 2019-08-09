@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextWebsite;
     private TextView textViewCodeVal;
     private ImageLoader imageLoader;
-    private RequestQueue requestQueue;
     private long lastClickTime = 0;
 
     private int savedUserNumber;
@@ -98,17 +97,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         imageView = findViewById(R.id.imageview_profile);
-        requestQueue = Volley.newRequestQueue(this);
-
-        imageLoader = new ImageLoader(requestQueue, new ImageLoader.ImageCache() {
-            private final LruCache<String, Bitmap> mCache = new LruCache<>(10);
-            public void putBitmap(String url, Bitmap bitmap) {
-                mCache.put(url, bitmap);
-            }
-            public Bitmap getBitmap(String url) {
-                return mCache.get(url);
-            }
-        });
+        imageLoader = MySingleton.getInstance(this.getApplicationContext()).getImageLoader();
 
         editTextName = findViewById(R.id.editText_name);
         editTextCompany = findViewById(R.id.editText_Company);
@@ -252,7 +241,6 @@ public class MainActivity extends AppCompatActivity {
         final String data= "{}";
         String postURL = URL + "api/users/";
 
-        requestQueue = Volley.newRequestQueue(getApplicationContext());
         StringRequest postRequest = new StringRequest(Request.Method.POST, postURL,
                 new Response.Listener<String>() {
                     @Override
@@ -313,7 +301,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         };
-        requestQueue.add(postRequest);
+        MySingleton.getInstance(this).addToRequestQueue(postRequest);
     }
 
     /**
@@ -326,7 +314,6 @@ public class MainActivity extends AppCompatActivity {
     private void getPerson(String code) {
         Log.d(TAG, "getPerson: Called");
         String getURL = URL + "api/user/" + code + "/";
-        requestQueue = Volley.newRequestQueue(getApplicationContext());
         StringRequest getRequest = new StringRequest(Request.Method.GET, getURL,
                 new Response.Listener<String>() {
                     @Override
@@ -365,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-        requestQueue.add(getRequest);
+        MySingleton.getInstance(this).addToRequestQueue(getRequest);
     }
 
     /**
@@ -382,7 +369,6 @@ public class MainActivity extends AppCompatActivity {
         final String saveData = data;
         String postURL = URL + ext;
 
-        requestQueue = Volley.newRequestQueue(getApplicationContext());
         StringRequest postRequest = new StringRequest(Request.Method.POST, postURL,
                 new Response.Listener<String>()
                 {
@@ -451,7 +437,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         };
-        requestQueue.add(postRequest);
+        MySingleton.getInstance(this).addToRequestQueue(postRequest);
     }
 
     /**
@@ -468,7 +454,6 @@ public class MainActivity extends AppCompatActivity {
         final String data= jsonData.toString();
         final String postURL = URL + "api/images/" + code + "/";
 
-        requestQueue = Volley.newRequestQueue(getApplicationContext());
         StringRequest postRequest = new StringRequest(Request.Method.POST, postURL + "string/",
                 new Response.Listener<String>() {
                     @Override
@@ -514,7 +499,7 @@ public class MainActivity extends AppCompatActivity {
                 return data.getBytes(StandardCharsets.UTF_8);
             }
         };
-        requestQueue.add(postRequest);
+        MySingleton.getInstance(this).addToRequestQueue(postRequest);
     }
 
     /**

@@ -6,6 +6,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,13 +19,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -43,6 +43,27 @@ public class ContactView extends AppCompatActivity implements AdapterView.OnItem
     private RecyclerView recyclerView;
     private Spinner spinner;
     private ArrayList<Contact> recentlyAddedContactList;
+
+    RecyclerViewAdapter.OnClickItemListener listener =
+            new RecyclerViewAdapter.OnClickItemListener() {
+        @Override
+        public void onClickItem(Contact item) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("id", item.getId());
+            Log.d(TAG, "onClickItem: ID placed in Bundle" + item.getId());
+            ContactViewFragment frag = new ContactViewFragment();
+            Log.d(TAG, "onClickItem: created frag");
+            frag.setArguments(bundle);
+            Log.d(TAG, "onClickItem: setargs");
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            Log.d(TAG, "onClickItem: transaction set");
+            transaction.replace(R.id.placeholder, frag);
+            Log.d(TAG, "onClickItem: replaced");
+            transaction.commit();
+            Log.d(TAG, "onClickItem: committed");
+            Toast.makeText(ContactView.this, item.getName(), Toast.LENGTH_SHORT).show();
+        }
+    };
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -109,7 +130,6 @@ public class ContactView extends AppCompatActivity implements AdapterView.OnItem
     private void getPerson(String code) {
         final String URL = "http://34.73.24.69/";
         String getURL = URL + "api/user/" + code + "/";
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         StringRequest getRequest = new StringRequest(Request.Method.GET, getURL,
                 new Response.Listener<String>() {
                     @Override
@@ -131,7 +151,9 @@ public class ContactView extends AppCompatActivity implements AdapterView.OnItem
                                             elt.getAsJsonObject().get("company").getAsString();
                                     String imgURL =
                                             elt.getAsJsonObject().get("imgURL").getAsString();
-                                    Contact c = new Contact(name,company,imgURL,counter);
+                                    int id =
+                                            elt.getAsJsonObject().get("id").getAsInt();
+                                    Contact c = new Contact(name,company,imgURL,counter,id);
                                     counter++;
                                     people.add(c);
                                 }
@@ -142,7 +164,7 @@ public class ContactView extends AppCompatActivity implements AdapterView.OnItem
                         Collections.sort(people, new SortName());
                         RecyclerViewAdapter adapter =
                                 new RecyclerViewAdapter
-                                        (ContactView.this, people);
+                                        (ContactView.this, people,listener);
                         recyclerView.setAdapter(adapter);
                     }
                 },
@@ -183,12 +205,11 @@ public class ContactView extends AppCompatActivity implements AdapterView.OnItem
                         }
                     }
         });
-        requestQueue.add(getRequest);
+        MySingleton.getInstance(this).addToRequestQueue(getRequest);
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String item = parent.getItemAtPosition(position).toString();
         ((TextView) parent.getChildAt(0)).setTextSize(14);
         ArrayList<Contact> temp = recentlyAddedContactList;
         RecyclerViewAdapter adapter;
@@ -197,7 +218,7 @@ public class ContactView extends AppCompatActivity implements AdapterView.OnItem
                 case 0 :
                     Log.d(TAG, "onItemSelected: Name in order selected" + position);
                     Collections.sort(temp,new SortName());
-                    adapter = new RecyclerViewAdapter(ContactView.this, temp);
+                    adapter = new RecyclerViewAdapter(ContactView.this, temp,listener );
                     recyclerView.setAdapter(adapter);
                     Log.d(TAG, "onItemSelected: Adapter Set");
                     break;
@@ -205,14 +226,14 @@ public class ContactView extends AppCompatActivity implements AdapterView.OnItem
                     Log.d(TAG, "onItemSelected: Name reverse selected" + position);
                     Collections.sort(temp,new SortName());
                     Collections.reverse(temp);
-                    adapter = new RecyclerViewAdapter(ContactView.this, temp);
+                    adapter = new RecyclerViewAdapter(ContactView.this, temp,listener);
                     recyclerView.setAdapter(adapter);
                     Log.d(TAG, "onItemSelected: Adapter Set");
                     break;
                 case 2:
                     Log.d(TAG, "onItemSelected: Company in order selected" + position);
                     Collections.sort(temp,new SortCompany());
-                    adapter = new RecyclerViewAdapter(ContactView.this, temp);
+                    adapter = new RecyclerViewAdapter(ContactView.this, temp,listener);
                     recyclerView.setAdapter(adapter);
                     Log.d(TAG, "onItemSelected: Adapter Set");
                     break;
@@ -220,22 +241,14 @@ public class ContactView extends AppCompatActivity implements AdapterView.OnItem
                     Log.d(TAG, "onItemSelected: Company reverse selected" + position);
                     Collections.sort(temp,new SortCompany());
                     Collections.reverse(temp);
-                    adapter = new RecyclerViewAdapter(ContactView.this, temp);
+                    adapter = new RecyclerViewAdapter(ContactView.this, temp,listener);
                     recyclerView.setAdapter(adapter);
                     Log.d(TAG, "onItemSelected: Adapter Set");
                     break;
                 case 4:
                     Log.d(TAG, "onItemSelected: Recently added selected" + position);
-                    Collections.sort(temp, new SortCompany());
-                    Collections.reverse(temp);
-                    adapter = new RecyclerViewAdapter(ContactView.this, temp);
-                    recyclerView.setAdapter(adapter);
-                    Log.d(TAG, "onItemSelected: Adapter Set");
-                    break;
-                case 5:
-                    Log.d(TAG, "onItemSelected: reverse selected" + position);
-                    Collections.sort(temp,new SortRecent());
-                    adapter = new RecyclerViewAdapter(ContactView.this, temp);
+                    Collections.sort(temp, new SortRecent());
+                    adapter = new RecyclerViewAdapter(ContactView.this, temp,listener);
                     recyclerView.setAdapter(adapter);
                     Log.d(TAG, "onItemSelected: Adapter Set");
                     break;

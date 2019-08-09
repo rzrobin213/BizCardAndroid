@@ -6,17 +6,6 @@
         <item>Richard</item>
         <item>Robert</item>
         <item>Matthew</item>
-        <item>Ernest</item>
-        <item>Shannon</item>
-        <item>Potato</item>
-        <item>Sherrie</item>
-        <item>Tomato</item>
-        <item>John Wick</item>
-        <item>Ay lmao</item>
-        <item>Ezra Cornell</item>
-        <item>Reeeeeeeeeeeeeeee</item>
-        <item>Zero</item>
-        <item>Bored</item>
     </array>
     <string-array name="filter_array">
         <item>Name (a-z)</item>
@@ -24,6 +13,5 @@
         <item>Company (a-z)</item>
         <item>Company (z-a)</item>
         <item>Recent</item>
-        <item>First</item>
     </string-array>
 </resources>
