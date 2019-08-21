@@ -128,8 +128,7 @@ public class ContactView extends AppCompatActivity implements AdapterView.OnItem
     }
 
     private void getPerson(String code) {
-        final String URL = "http://34.73.24.69/";
-        String getURL = URL + "api/user/" + code + "/";
+        String getURL = MySingleton.URL + "api/user/" + code + "/";
         StringRequest getRequest = new StringRequest(Request.Method.GET, getURL,
                 new Response.Listener<String>() {
                     @Override

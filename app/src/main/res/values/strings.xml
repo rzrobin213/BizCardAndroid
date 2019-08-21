@@ -21,7 +21,7 @@
     <string name="hint_website">Put the link of your website here</string>
     <string name="field_website">Website:</string>
     <string name="field_Code">Code:</string>
-    <string name="example_Code"></string>
+    <string name="example_Code" />
     <string name="button_updateValues">Update Values</string>
     <string name="hint_inputCode">Enter the code of the person you want to add</string>
     <string name="button_add">Add</string>

@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     public static final int PICK_IMAGE = 1;
-    private final String URL = "http://34.73.24.69/";
     private NetworkImageView imageView;
     private EditText editTextName;
     private EditText editTextPosition;
@@ -239,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
     {
         Log.d(TAG, "createNewPerson: Called");
         final String data= "{}";
-        String postURL = URL + "api/users/";
+        String postURL = MySingleton.URL + "api/users/";
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, postURL,
                 new Response.Listener<String>() {
@@ -313,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void getPerson(String code) {
         Log.d(TAG, "getPerson: Called");
-        String getURL = URL + "api/user/" + code + "/";
+        String getURL = MySingleton.URL + "api/user/" + code + "/";
         StringRequest getRequest = new StringRequest(Request.Method.GET, getURL,
                 new Response.Listener<String>() {
                     @Override
@@ -367,7 +366,7 @@ public class MainActivity extends AppCompatActivity {
     {
         Log.d(TAG, "updateValues: Called");
         final String saveData = data;
-        String postURL = URL + ext;
+        String postURL = MySingleton.URL + ext;
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, postURL,
                 new Response.Listener<String>()
@@ -452,7 +451,7 @@ public class MainActivity extends AppCompatActivity {
         JsonObject jsonData = new JsonObject();
         jsonData.addProperty("img",image);
         final String data= jsonData.toString();
-        final String postURL = URL + "api/images/" + code + "/";
+        final String postURL = MySingleton.URL + "api/images/" + code + "/";
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, postURL + "string/",
                 new Response.Listener<String>() {

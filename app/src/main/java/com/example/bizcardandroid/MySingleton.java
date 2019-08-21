@@ -10,6 +10,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
 class MySingleton {
+    final static String URL = "http://107.178.220.183/";
     private static MySingleton instance;
     private RequestQueue requestQueue;
     private ImageLoader imageLoader;
@@ -46,8 +47,6 @@ class MySingleton {
 
     private RequestQueue getRequestQueue() {
         if (requestQueue == null) {
-            // getApplicationContext() is key, it keeps you from leaking the
-            // Activity or BroadcastReceiver if someone passes one in.
             requestQueue = Volley.newRequestQueue(ctx.getApplicationContext());
         }
         return requestQueue;

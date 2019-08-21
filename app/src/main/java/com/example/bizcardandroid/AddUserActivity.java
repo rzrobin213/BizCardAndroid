@@ -25,7 +25,6 @@ import com.google.gson.JsonParser;
 public class AddUserActivity extends AppCompatActivity {
 
     private static final String TAG = "AddUserActivity";
-    private final String URL = "http://34.73.24.69/";
     private String idNumber;
     private EditText editTextCode;
     BottomNavigationView navView;
@@ -97,7 +96,7 @@ public class AddUserActivity extends AppCompatActivity {
     private void addContact (String code)
     {
         Log.d(TAG, "addContact: Contact added");
-        String postURL = URL + "api/user/" + idNumber + "/" + code +"/";
+        String postURL = MySingleton.URL + "api/user/" + idNumber + "/" + code +"/";
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, postURL,
                 new Response.Listener<String>() {

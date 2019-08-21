@@ -33,7 +33,7 @@ public class ContactViewFragment extends Fragment {
 
 
     public ContactViewFragment() {
-        // Required empty public constructor
+        // empty constructor
     }
 
 
@@ -65,8 +65,7 @@ public class ContactViewFragment extends Fragment {
 
     private void getPerson(String id) {
         Log.d(TAG, "getPerson: Called");
-        final String URL = "http://34.73.24.69/";
-        String getURL = URL + "api/user/" + id + "/";
+        String getURL = MySingleton.URL + "api/user/" + id + "/";
         StringRequest getRequest = new StringRequest(Request.Method.GET, getURL,
                 new Response.Listener<String>() {
                     @Override
