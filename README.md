@@ -4,10 +4,11 @@ This is the Android port of a flask app developed for the Spring 2019 CUAppDev B
 
 
 ## Screenshots
-[[https://github.com/rzrobin213/BizCardAndroid/blob/master/Screenshots/horizontal-home-edit.png|alt=horizontal-home-edit]]
-[[https://github.com/rzrobin213/BizCardAndroid/blob/master/Screenshots/horizontal-home-edit.png|alt=horizontal-home-edit]]
-[[https://github.com/rzrobin213/BizCardAndroid/blob/master/Screenshots/horizontal-home-edit.png|alt=horizontal-home-edit]]
-[[https://github.com/rzrobin213/BizCardAndroid/blob/master/Screenshots/horizontal-home-edit.png|alt=horizontal-home-edit]]
+![Screenshot](Screenshots/vertical-home-edit.png)
+![Screenshot](Screenshots/horizontal-home-edit.png)
+![Screenshot](Screenshots/add-edit.png)
+![Screenshot](Screenshots/contact-edit.png)
+
 
 ## Authors
 
